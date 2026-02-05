@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Vocabulary Pronunciation Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .controls {
+            background: #f5f7fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .control-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        select, button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        select {
+            background: white;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            border-radius: 25px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .tab:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .vocabulary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .vocab-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .vocab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border-color: #667eea;
+        }
+
+        .vocab-card.playing {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .word {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .vocab-card.playing .word {
+            color: white;
+        }
+
+        .pronunciation {
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+
+        .vocab-card.playing .pronunciation {
+            color: #ffd700;
+        }
+
+        .meaning {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 10px;
+        }
+
+        .vocab-card.playing .meaning {
+            color: rgba(255,255,255,0.9);
+        }
+
+        .example {
+            color: #888;
+            font-size: 0.9em;
+            font-style: italic;
+            padding-top: 10px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .vocab-card.playing .example {
+            color: rgba(255,255,255,0.8);
+            border-top-color: rgba(255,255,255,0.3);
+        }
+
+        .speaker-icon {
+            font-size: 1.5em;
+            margin-right: 8px;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .info-box strong {
+            color: #1976D2;
+        }
+
+        @media (max-width: 768px) {
+            .vocabulary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Tech Vocabulary Pronunciation Tool</h1>
+        <p class="subtitle">Click on any word to hear pronunciation | Click vào từ để nghe phát âm</p>
+
+        <div class="info-box">
+            <strong>💡 Cách sử dụng:</strong> Click vào bất kỳ thẻ từ nào để nghe phát âm. Bạn có thể thay đổi giọng nói và tốc độ bên dưới.
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="voice">Voice / Giọng:</label>
+                <select id="voice"></select>
+
+                <label for="rate">Speed / Tốc độ:</label>
+                <select id="rate">
+                    <option value="0.75">Slow / Chậm</option>
+                    <option value="1" selected>Normal / Bình thường</option>
+                    <option value="1.25">Fast / Nhanh</option>
+                </select>
+
+                <button onclick="testVoice()">🔊 Test Voice</button>
+            </div>
+        </div>
+
+        <div class="category-tabs">
+            <div class="tab active" onclick="filterCategory('all')">All / Tất cả</div>
+            <div class="tab" onclick="filterCategory('html')">HTML</div>
+            <div class="tab" onclick="filterCategory('css')">CSS</div>
+            <div class="tab" onclick="filterCategory('javascript')">JavaScript</div>
+            <div class="tab" onclick="filterCategory('react')">React</div>
+            <div class="tab" onclick="filterCategory('git')">Git</div>
+        </div>
+
+        <div id="vocabulary-container" class="vocabulary-grid"></div>
+    </div>
+
+    <script>
+        const vocabulary = {
+            html: [
+                { word: 'tag', pronunciation: '/tæɡ/', meaning: 'thẻ', example: 'HTML tag' },
+                { word: 'element', pronunciation: '/ˈelɪmənt/', meaning: 'phần tử', example: 'div element' },
+                { word: 'attribute', pronunciation: '/əˈtrɪbjuːt/', meaning: 'thuộc tính', example: 'class attribute' },
+                { word: 'div', pronunciation: '/dɪv/', meaning: 'khối', example: 'div container' },
+                { word: 'span', pronunciation: '/spæn/', meaning: 'nhịp', example: 'span element' },
+                { word: 'link', pronunciation: '/lɪŋk/', meaning: 'liên kết', example: 'hyperlink' },
+                { word: 'image', pronunciation: '/ˈɪmɪdʒ/', meaning: 'hình ảnh', example: 'image tag' },
+                { word: 'form', pronunciation: '/fɔːrm/', meaning: 'biểu mẫu', example: 'form input' },
+                { word: 'input', pronunciation: '/ˈɪnpʊt/', meaning: 'đầu vào', example: 'text input' },
+                { word: 'button', pronunciation: '/ˈbʌtn/', meaning: 'nút bấm', example: 'submit button' }
+            ],
+            css: [
+                { word: 'style', pronunciation: '/staɪl/', meaning: 'phong cách', example: 'CSS style' },
+                { word: 'class', pronunciation: '/klæs/', meaning: 'lớp', example: 'CSS class' },
+                { word: 'color', pronunciation: '/ˈkʌlər/', meaning: 'màu sắc', example: 'text color' },
+                { word: 'width', pronunciation: '/wɪdθ/', meaning: 'độ rộng', example: 'div width' },
+                { word: 'height', pronunciation: '/haɪt/', meaning: 'độ cao', example: 'element height' },
+                { word: 'margin', pronunciation: '/ˈmɑːrdʒɪn/', meaning: 'lề ngoài', example: 'margin top' },
+                { word: 'padding', pronunciation: '/ˈpædɪŋ/', meaning: 'lề trong', example: 'padding left' },
+                { word: 'border', pronunciation: '/ˈbɔːrdər/', meaning: 'viền', example: 'border style' },
+                { word: 'background', pronunciation: '/ˈbækɡraʊnd/', meaning: 'nền', example: 'background color' },
+                { word: 'display', pronunciation: '/dɪˈspleɪ/', meaning: 'hiển thị', example: 'display flex' }
+            ],
+            javascript: [
+                { word: 'variable', pronunciation: '/ˈveriəbl/', meaning: 'biến', example: 'declare a variable' },
+                { word: 'constant', pronunciation: '/ˈkɑːnstənt/', meaning: 'hằng số', example: 'const value' },
+                { word: 'function', pronunciation: '/ˈfʌŋkʃən/', meaning: 'hàm', example: 'function declaration' },
+                { word: 'method', pronunciation: '/ˈmeθəd/', meaning: 'phương thức', example: 'array method' },
+                { word: 'array', pronunciation: '/əˈreɪ/', meaning: 'mảng', example: 'array of numbers' },
+                { word: 'object', pronunciation: '/ˈɑːbdʒekt/', meaning: 'đối tượng', example: 'JavaScript object' },
+                { word: 'string', pronunciation: '/strɪŋ/', meaning: 'chuỗi', example: 'string value' },
+                { word: 'number', pronunciation: '/ˈnʌmbər/', meaning: 'số', example: 'number type' },
+                { word: 'boolean', pronunciation: '/ˈbuːliən/', meaning: 'kiểu logic', example: 'boolean value' },
+                { word: 'loop', pronunciation: '/luːp/', meaning: 'vòng lặp', example: 'for loop' },
+                { word: 'condition', pronunciation: '/kənˈdɪʃən/', meaning: 'điều kiện', example: 'if condition' },
+                { word: 'event', pronunciation: '/ɪˈvent/', meaning: 'sự kiện', example: 'click event' },
+                { word: 'callback', pronunciation: '/ˈkɔːlbæk/', meaning: 'gọi lại', example: 'callback function' }
+            ],
+            react: [
+                { word: 'component', pronunciation: '/kəmˈpoʊnənt/', meaning: 'thành phần', example: 'React component' },
+                { word: 'props', pronunciation: '/prɑːps/', meaning: 'thuộc tính', example: 'pass props' },
+                { word: 'state', pronunciation: '/steɪt/', meaning: 'trạng thái', example: 'component state' },
+                { word: 'hook', pronunciation: '/hʊk/', meaning: 'móc', example: 'useState hook' },
+                { word: 'render', pronunciation: '/ˈrendər/', meaning: 'kết xuất', example: 'render component' },
+                { word: 'lifecycle', pronunciation: '/ˈlaɪfsaɪkəl/', meaning: 'vòng đời', example: 'component lifecycle' }
+            ],
+            git: [
+                { word: 'commit', pronunciation: '/kəˈmɪt/', meaning: 'xác nhận', example: 'git commit' },
+                { word: 'push', pronunciation: '/pʊʃ/', meaning: 'đẩy lên', example: 'git push' },
+                { word: 'pull', pronunciation: '/pʊl/', meaning: 'kéo về', example: 'git pull' },
+                { word: 'branch', pronunciation: '/bræntʃ/', meaning: 'nhánh', example: 'create branch' },
+                { word: 'merge', pronunciation: '/mɜːrdʒ/', meaning: 'hợp nhất', example: 'merge branch' },
+                { word: 'clone', pronunciation: '/kloʊn/', meaning: 'sao chép', example: 'git clone' },
+                { word: 'fork', pronunciation: '/fɔːrk/', meaning: 'rẽ nhánh', example: 'fork repository' },
+                { word: 'repository', pronunciation: '/rɪˈpɑːzətɔːri/', meaning: 'kho', example: 'GitHub repository' }
+            ]
+        };
+
+        let synth = window.speechSynthesis;
+        let voices = [];
+        let currentCategory = 'all';
+
+        function loadVoices() {
+            voices = synth.getVoices();
+            const voiceSelect = document.getElementById('voice');
+            voiceSelect.innerHTML = '';
+
+            const englishVoices = voices.filter(voice => voice.lang.startsWith('en'));
+
+            if (englishVoices.length === 0) {
+                voiceSelect.innerHTML = '<option>Loading voices...</option>';
+                return;
+            }
+
+            englishVoices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                if (voice.lang === 'en-US' && voice.name.includes('Google')) {
+                    option.selected = true;
+                }
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        if (synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = loadVoices;
+        }
+        loadVoices();
+
+        function speak(text, cardElement) {
+            if (synth.speaking) {
+                synth.cancel();
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            const voiceSelect = document.getElementById('voice');
+            const rateSelect = document.getElementById('rate');
+
+            const englishVoices = voices.filter(voice => voice.lang.startsWith('en'));
+            if (englishVoices.length > 0) {
+                utterance.voice = englishVoices[voiceSelect.value] || englishVoices[0];
+            }
+
+            utterance.rate = parseFloat(rateSelect.value);
+            utterance.pitch = 1;
+            utterance.volume = 1;
+
+            if (cardElement) {
+                cardElement.classList.add('playing');
+                utterance.onend = () => {
+                    cardElement.classList.remove('playing');
+                };
+            }
+
+            synth.speak(utterance);
+        }
+
+        function testVoice() {
+            speak('Hello, this is a test. I am a frontend developer.');
+        }
+
+        function renderVocabulary() {
+            const container = document.getElementById('vocabulary-container');
+            container.innerHTML = '';
+
+            const categoriesToShow = currentCategory === 'all'
+                ? Object.keys(vocabulary)
+                : [currentCategory];
+
+            categoriesToShow.forEach(category => {
+                vocabulary[category].forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'vocab-card';
+                    card.innerHTML = `
+                        <div class="word"><span class="speaker-icon">🔊</span>${item.word}</div>
+                        <div class="pronunciation">${item.pronunciation}</div>
+                        <div class="meaning">${item.meaning}</div>
+                        <div class="example">"${item.example}"</div>
+                    `;
+                    card.onclick = () => speak(item.word, card);
+                    container.appendChild(card);
+                });
+            });
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            renderVocabulary();
+        }
+
+        // Initialize
+        renderVocabulary();
+    </script>
+</body>
+</html>

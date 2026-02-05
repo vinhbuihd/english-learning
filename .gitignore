@@ -1,0 +1,27 @@
+# Personal notes and practice files
+personal-notes/
+scratch/
+*.private.md
+
+# Audio/Video recordings (too large for git)
+*.mp3
+*.mp4
+*.wav
+*.m4a
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
