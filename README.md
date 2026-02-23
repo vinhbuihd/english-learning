@@ -13,14 +13,18 @@ This is my English learning journey as a frontend developer. This repository doc
 - **Listening**: Nghe hiểu tech talks, conferences, team meetings
 - **Speaking**: Giao tiếp với team quốc tế, thuyết trình, phỏng vấn
 
-## Cấu trúc / Structure
+## Tech Stack
 
-```
-├── lessons/          # Các bài học theo tuần/tháng
-├── vocabulary/       # Từ vựng quan trọng
-├── exercises/        # Bài tập thực hành
-├── resources/        # Tài liệu tham khảo
-└── PROGRESS.md       # Theo dõi tiến độ
+- React 19 + TypeScript + Vite
+- Tailwind CSS v4
+- React Router v7
+- Deploy: Vercel
+
+## Getting Started
+
+```bash
+npm install
+npm run dev
 ```
 
 ## Phương pháp học / Learning Method

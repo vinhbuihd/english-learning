@@ -1,3 +1,9 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
 # Personal notes and practice files
 personal-notes/
 scratch/
@@ -25,3 +31,7 @@ desktop.ini
 tmp/
 temp/
 *.tmp
+
+# Environment
+.env
+.env.local
