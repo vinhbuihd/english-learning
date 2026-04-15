@@ -1,4 +1,4 @@
-export type VocabCategoryId = 'html' | 'css' | 'javascript' | 'react' | 'git'
+export type VocabCategoryId = 'html' | 'css' | 'javascript' | 'react' | 'git' | 'greetings' | 'common'
 
 export interface VocabWord {
   id: string
