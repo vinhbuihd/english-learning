@@ -29,7 +29,7 @@ export default function SpeakButton({ text, audioUrl, className = '' }: Props) {
       try {
         await speak(text)
       } catch {
-        // ignore speech errors
+        // Ignore speech errors and leave the UI responsive.
       }
     } finally {
       setPlaying(false)
@@ -39,8 +39,8 @@ export default function SpeakButton({ text, audioUrl, className = '' }: Props) {
   return (
     <button
       onClick={handleClick}
-      className={`rounded-full p-2 text-lg transition-colors hover:bg-primary-50 ${
-        playing ? 'animate-pulse text-primary-500' : 'text-gray-400'
+      className={`rounded-full border border-slate-200 bg-white p-2.5 text-slate-500 shadow-sm hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 ${
+        playing ? 'animate-pulse border-primary-300 bg-primary-50 text-primary-700' : ''
       } ${className}`}
       aria-label={`Play pronunciation for ${text}`}
     >

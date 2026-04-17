@@ -11,35 +11,43 @@ const links = [
 
 export default function Navbar() {
   return (
-    <nav className="hidden border-b border-gray-200 bg-white md:block">
-      <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
-        <NavLink to="/" className="text-lg font-bold text-primary-600">
-          English Learning
+    <nav className="hidden md:block">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+        <NavLink to="/" className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-100 text-sm font-bold text-primary-700 shadow-sm">
+            EL
+          </div>
+          <div>
+            <p className="text-lg font-bold text-gray-900">English Learning</p>
+            <p className="text-sm text-gray-500">Học dễ hơn, đều hơn mỗi ngày</p>
+          </div>
         </NavLink>
-        <div className="flex gap-1">
+
+        <div className="flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-2 py-2 shadow-[0_10px_30px_rgba(37,99,235,0.08)] backdrop-blur">
           {links.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               end={link.to === '/'}
               className={({ isActive }) =>
-                `rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                `rounded-full px-4 py-2 text-sm font-semibold ${
                   isActive
-                    ? 'bg-primary-50 text-primary-700'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-primary-600 text-white shadow-sm'
+                    : 'text-gray-600 hover:bg-primary-50 hover:text-primary-700'
                 }`
               }
             >
               {link.label}
             </NavLink>
           ))}
+
           <NavLink
             to="/settings"
             className={({ isActive }) =>
-              `rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+              `rounded-full px-4 py-2 text-sm font-semibold ${
                 isActive
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:bg-primary-50 hover:text-primary-700'
               }`
             }
           >
