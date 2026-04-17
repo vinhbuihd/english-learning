@@ -43,7 +43,7 @@ export default function Navbar() {
               }`
             }
           >
-            Settings
+            Cài đặt
           </NavLink>
         </div>
       </div>

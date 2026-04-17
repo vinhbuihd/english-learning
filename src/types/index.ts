@@ -5,6 +5,7 @@ export interface SM2Data {
   repetitions: number
   nextReviewDate: string
   lastReviewDate: string | null
+  updatedAt?: string
 }
 
 export type ReviewQuality = 0 | 1 | 2 | 3 | 4 | 5
@@ -37,6 +38,7 @@ export interface LessonProgress {
   exerciseScores: Record<string, number>
   completed: boolean
   completedAt?: string
+  updatedAt?: string
 }
 
 export interface Achievement {
@@ -46,6 +48,7 @@ export interface Achievement {
   icon: string
   unlockedAt?: string
   condition: string
+  updatedAt?: string
 }
 
 export interface UserSettings {
@@ -53,6 +56,7 @@ export interface UserSettings {
   speechVoiceURI?: string
   dailyGoalWords: number
   showIPA: boolean
+  updatedAt?: string
 }
 
 export interface LookupResult {
@@ -99,4 +103,10 @@ export interface UserProgress {
   settings: UserSettings
   totalWordsLearned: number
   createdAt: string
+  updatedAt: string
+  lastSyncedAt?: string | null
+  syncVersion: number
+  deviceId: string
 }
+
+export type SyncStatus = 'signed_out' | 'unavailable' | 'syncing' | 'synced' | 'error'

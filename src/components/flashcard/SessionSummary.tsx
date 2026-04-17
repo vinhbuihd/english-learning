@@ -7,9 +7,10 @@ interface Props {
 }
 
 export default function SessionSummary({ session, onRestart }: Props) {
-  const percentage = session.wordsReviewed > 0
-    ? Math.round((session.wordsCorrect / session.wordsReviewed) * 100)
-    : 0
+  const percentage =
+    session.wordsReviewed > 0
+      ? Math.round((session.wordsCorrect / session.wordsReviewed) * 100)
+      : 0
 
   return (
     <div className="flex flex-col items-center gap-6 py-8 text-center">

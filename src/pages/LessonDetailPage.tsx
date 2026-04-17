@@ -1,42 +1,41 @@
-import { useParams, Link } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { allLessons } from '../data/lessons'
 import LessonContent from '../components/lesson/LessonContent'
 
 export default function LessonDetailPage() {
   const { slug } = useParams()
-  const lesson = allLessons.find((l) => l.slug === slug)
+  const { search } = useLocation()
+  const lesson = allLessons.find((item) => item.slug === slug)
 
   if (!lesson) {
     return (
       <div className="py-16 text-center">
-        <p className="text-gray-500">Không tìm thấy bài học</p>
-        <Link to="/lessons" className="mt-2 text-primary-500 hover:underline">
+        <p className="text-lg text-gray-500">Không tìm thấy bài học</p>
+        <Link to={`/lessons${search}`} className="mt-2 text-lg text-primary-500 hover:underline">
           ← Quay lại danh sách
         </Link>
       </div>
     )
   }
 
+  const prevLessonSlug = allLessons.find((item) => item.id === lesson.prevLessonId)?.slug
+  const nextLessonSlug = allLessons.find((item) => item.id === lesson.nextLessonId)?.slug
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <Link
-          to="/lessons"
-          className="text-sm text-gray-500 hover:text-primary-500"
-        >
+        <Link to={`/lessons${search}`} className="text-base text-gray-500 hover:text-primary-500">
           ← Danh sách bài học
         </Link>
-        <h1 className="mt-2 text-2xl font-bold text-gray-900">
-          {lesson.titleVi}
-        </h1>
-        <p className="text-gray-500">{lesson.title}</p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {lesson.objectives.map((obj, i) => (
+        <h1 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">{lesson.titleVi}</h1>
+        <p className="mt-2 text-lg text-gray-500 sm:text-xl">{lesson.title}</p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          {lesson.objectives.map((objective, index) => (
             <span
-              key={i}
-              className="rounded-full bg-primary-50 px-3 py-1 text-xs text-primary-700"
+              key={index}
+              className="rounded-full bg-primary-50 px-4 py-1.5 text-sm font-medium text-primary-700"
             >
-              {obj}
+              {objective}
             </span>
           ))}
         </div>
@@ -44,22 +43,16 @@ export default function LessonDetailPage() {
 
       <LessonContent lesson={lesson} />
 
-      <div className="flex justify-between border-t border-gray-200 pt-4">
-        {lesson.prevLessonId ? (
-          <Link
-            to={`/lessons/${allLessons.find((l) => l.id === lesson.prevLessonId)?.slug}`}
-            className="text-primary-500 hover:underline"
-          >
+      <div className="flex justify-between border-t border-gray-200 pt-5 text-lg">
+        {prevLessonSlug ? (
+          <Link to={`/lessons/${prevLessonSlug}${search}`} className="text-primary-500 hover:underline">
             ← Bài trước
           </Link>
         ) : (
           <div />
         )}
-        {lesson.nextLessonId ? (
-          <Link
-            to={`/lessons/${allLessons.find((l) => l.id === lesson.nextLessonId)?.slug}`}
-            className="text-primary-500 hover:underline"
-          >
+        {nextLessonSlug ? (
+          <Link to={`/lessons/${nextLessonSlug}${search}`} className="text-primary-500 hover:underline">
             Bài tiếp theo →
           </Link>
         ) : (

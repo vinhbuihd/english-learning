@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function MatchingExercise({ exercise, onComplete }: Props) {
-  const pairs = exercise.pairs ?? []
+  const pairs = useMemo(() => exercise.pairs ?? [], [exercise.pairs])
   const shuffledRight = useMemo(() => shuffleArray(pairs.map((p) => p.right)), [pairs])
 
   const [selectedLeft, setSelectedLeft] = useState<number | null>(null)

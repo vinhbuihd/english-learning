@@ -8,7 +8,7 @@ export default function ProgressPage() {
   const { progress } = useProgress()
 
   const achievements = Object.values(progress.achievements)
-  const unlocked = achievements.filter((a) => a.unlockedAt)
+  const unlocked = achievements.filter((achievement) => achievement.unlockedAt)
 
   return (
     <div className="space-y-6">
@@ -17,29 +17,14 @@ export default function ProgressPage() {
       <StreakCounter />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatsCard
-          icon="📚"
-          value={progress.totalWordsLearned}
-          label="Từ đã học"
-        />
+        <StatsCard icon="📚" value={progress.totalWordsLearned} label="Từ đã học" />
         <StatsCard
           icon="🎓"
-          value={
-            Object.values(progress.lessonProgress).filter((l) => l.completed)
-              .length
-          }
+          value={Object.values(progress.lessonProgress).filter((lesson) => lesson.completed).length}
           label="Bài hoàn thành"
         />
-        <StatsCard
-          icon="🔥"
-          value={progress.streak.currentStreak}
-          label="Streak hiện tại"
-        />
-        <StatsCard
-          icon="🏆"
-          value={progress.streak.longestStreak}
-          label="Streak cao nhất"
-        />
+        <StatsCard icon="🔥" value={progress.streak.currentStreak} label="Streak hiện tại" />
+        <StatsCard icon="🏆" value={progress.streak.longestStreak} label="Streak cao nhất" />
       </div>
 
       <WeeklyChart dailyLogs={progress.dailyLogs} />

@@ -14,13 +14,13 @@ const buttons: { label: string; quality: ReviewQuality; color: string }[] = [
 export default function DifficultyButtons({ onRate }: Props) {
   return (
     <div className="grid grid-cols-4 gap-2">
-      {buttons.map((btn) => (
+      {buttons.map((button) => (
         <button
-          key={btn.quality}
-          onClick={() => onRate(btn.quality)}
-          className={`rounded-xl px-3 py-3 text-sm font-semibold text-white transition-transform hover:scale-105 ${btn.color}`}
+          key={button.quality}
+          onClick={() => onRate(button.quality)}
+          className={`rounded-xl px-3 py-3 text-sm font-semibold text-white transition-transform hover:scale-105 ${button.color}`}
         >
-          {btn.label}
+          {button.label}
         </button>
       ))}
     </div>

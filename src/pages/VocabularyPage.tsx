@@ -9,7 +9,7 @@ export default function VocabularyPage() {
   const words =
     activeCategory === 'all'
       ? getAllWords()
-      : allCategories.find((c) => c.id === activeCategory)?.words ?? []
+      : allCategories.find((category) => category.id === activeCategory)?.words ?? []
 
   return (
     <div className="space-y-4">
@@ -26,17 +26,17 @@ export default function VocabularyPage() {
         >
           Tất cả ({getAllWords().length})
         </button>
-        {allCategories.map((cat) => (
+        {allCategories.map((category) => (
           <button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
+            key={category.id}
+            onClick={() => setActiveCategory(category.id)}
             className={`rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
-              activeCategory === cat.id
+              activeCategory === category.id
                 ? 'bg-primary-500 text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
-            {cat.icon} {cat.name} ({cat.words.length})
+            {category.icon} {category.name} ({category.words.length})
           </button>
         ))}
       </div>

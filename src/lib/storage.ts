@@ -20,4 +20,12 @@ export function saveToStorage<T>(key: string, value: T): void {
   }
 }
 
+export function removeFromStorage(key: string): void {
+  try {
+    localStorage.removeItem(key)
+  } catch {
+    console.warn('Failed to remove from localStorage')
+  }
+}
+
 export { STORAGE_KEY, LEARNING_WORDS_STORAGE_KEY, BOOK_WORD_CACHE_STORAGE_KEY }

@@ -11,7 +11,7 @@ export default function HomePage() {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Chào mừng quay lại</h1>
         <p className="mt-1 text-gray-500">Tiếp tục hành trình học tiếng Anh của bạn</p>
       </div>
 

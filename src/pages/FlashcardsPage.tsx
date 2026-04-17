@@ -1,8 +1,8 @@
+import { Link } from 'react-router-dom'
 import { useFlashcards } from '../hooks/useFlashcards'
 import FlashcardItem from '../components/flashcard/FlashcardItem'
 import DifficultyButtons from '../components/flashcard/DifficultyButtons'
 import SessionSummary from '../components/flashcard/SessionSummary'
-import { Link } from 'react-router-dom'
 
 export default function FlashcardsPage() {
   const {
@@ -57,9 +57,7 @@ export default function FlashcardsPage() {
       {isFlipped ? (
         <DifficultyButtons onRate={rateAndNext} />
       ) : (
-        <p className="text-center text-sm text-gray-400">
-          Nhấn vào thẻ để xem đáp án
-        </p>
+        <p className="text-center text-sm text-gray-400">Nhấn vào thẻ để xem đáp án</p>
       )}
     </div>
   )
