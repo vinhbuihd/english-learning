@@ -1,4 +1,5 @@
 import {
+  startTransition,
   useCallback,
   useEffect,
   useMemo,
@@ -55,6 +56,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const retryTimerRef = useRef<number | null>(null)
   const syncInFlightRef = useRef(false)
   const pendingSyncRef = useRef(false)
+  const performSyncRef = useRef<() => Promise<void>>(async () => {})
 
   useEffect(() => {
     progressRef.current = progress
@@ -89,17 +91,21 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       }
       retryTimerRef.current = window.setTimeout(() => {
         retryTimerRef.current = null
-        void performSync()
+        void performSyncRef.current()
       }, SYNC_RETRY_MS)
     } finally {
       syncInFlightRef.current = false
 
       if (pendingSyncRef.current) {
         pendingSyncRef.current = false
-        void performSync()
+        void performSyncRef.current()
       }
     }
   }, [auth.isConfigured, auth.user])
+
+  useEffect(() => {
+    performSyncRef.current = performSync
+  }, [performSync])
 
   const clearTimers = useCallback(() => {
     if (debounceTimerRef.current) {
@@ -139,7 +145,6 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!auth.isConfigured) {
-      setSyncStatus('unavailable')
       return
     }
 
@@ -147,8 +152,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       clearTimers()
       const guestProgress = loadLocalProgress()
       progressRef.current = guestProgress
-      setProgress(guestProgress)
-      setSyncStatus('signed_out')
+      startTransition(() => {
+        setProgress(guestProgress)
+        setSyncStatus('signed_out')
+      })
       return
     }
 
@@ -156,7 +163,9 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     const userId = auth.user.id
     const localUserProgress = loadLocalProgress(userId)
     progressRef.current = localUserProgress
-    setProgress(localUserProgress)
+    startTransition(() => {
+      setProgress(localUserProgress)
+    })
 
     const bootstrapSync = async () => {
       setSyncStatus('syncing')
@@ -187,6 +196,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       cancelled = true
     }
   }, [auth.isConfigured, auth.user, clearTimers])
+
+  const effectiveSyncStatus = auth.isConfigured ? syncStatus : 'unavailable'
 
   useEffect(() => {
     const handleOnline = () => {
@@ -341,7 +352,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const value = useMemo<ProgressContextValue>(
     () => ({
       progress,
-      syncStatus,
+      syncStatus: effectiveSyncStatus,
       lastSyncedAt: progress.lastSyncedAt ?? null,
       isAuthenticated: Boolean(auth.user),
       isSyncConfigured: auth.isConfigured,
@@ -364,7 +375,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       progress,
       recordActivity,
       resetAll,
-      syncStatus,
+      effectiveSyncStatus,
       updateLessonProgress,
       updateSettings,
       updateWordProgress,
