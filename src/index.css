@@ -20,4 +20,21 @@
 body {
   @apply bg-gray-50 text-gray-900 antialiased;
   min-height: 100vh;
+  font-family: 'Atkinson Hyperlegible', 'Segoe UI', sans-serif;
+  font-size: 20px;
+  line-height: 1.65;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 16px;
+    line-height: 1.6;
+  }
 }

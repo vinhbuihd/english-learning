@@ -36,12 +36,15 @@ export interface Lesson {
   title: string
   titleVi: string
   description: string
+  seriesId?: 'core' | 'book-1'
+  seriesTitle?: string
   phase: 1 | 2 | 3
   week: number
   order: number
   objectives: string[]
   sections: LessonSection[]
   estimatedMinutes: number
+  bookUnitWords?: string[]
   nextLessonId?: string
   prevLessonId?: string
 }

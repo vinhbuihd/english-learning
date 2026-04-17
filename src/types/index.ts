@@ -55,6 +55,41 @@ export interface UserSettings {
   showIPA: boolean
 }
 
+export interface LookupResult {
+  term: string
+  ipa: string
+  audioUrl?: string
+  definitionsEn: string[]
+  definitionsVi: string[]
+  examples: string[]
+  relatedWords: string[]
+  wordFamily: string[]
+  searchedAt: string
+  source: string
+}
+
+export type LearningWord = LookupResult
+
+export interface BookWordDetail {
+  term: string
+  ipa: string
+  audioUrl?: string
+  partOfSpeech: string
+  definition: string
+  definitionVi: string
+  example: string
+  source: string
+}
+
+export interface LookupMessage {
+  id: string
+  role: 'user' | 'assistant'
+  content: string
+  result?: LookupResult
+  status?: 'success' | 'loading' | 'error' | 'not-found'
+  createdAt: string
+}
+
 export interface UserProgress {
   streak: StreakData
   dailyLogs: Record<string, DailyLog>

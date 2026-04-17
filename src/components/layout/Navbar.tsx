@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 
 const links = [
   { to: '/', label: 'Trang chủ' },
+  { to: '/dictionary', label: 'Tra từ' },
   { to: '/vocabulary', label: 'Từ vựng' },
   { to: '/flashcards', label: 'Flashcards' },
   { to: '/lessons', label: 'Bài học' },
@@ -13,7 +14,7 @@ export default function Navbar() {
     <nav className="hidden border-b border-gray-200 bg-white md:block">
       <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
         <NavLink to="/" className="text-lg font-bold text-primary-600">
-          📚 English Learning
+          English Learning
         </NavLink>
         <div className="flex gap-1">
           {links.map((link) => (
@@ -42,7 +43,7 @@ export default function Navbar() {
               }`
             }
           >
-            ⚙️
+            Settings
           </NavLink>
         </div>
       </div>

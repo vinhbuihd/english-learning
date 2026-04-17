@@ -1,6 +1,7 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AppLayout from './components/layout/AppLayout'
 import HomePage from './pages/HomePage'
+import DictionaryPage from './pages/DictionaryPage'
 import VocabularyPage from './pages/VocabularyPage'
 import FlashcardsPage from './pages/FlashcardsPage'
 import LessonsPage from './pages/LessonsPage'
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/dictionary" element={<DictionaryPage />} />
           <Route path="/vocabulary" element={<VocabularyPage />} />
           <Route path="/flashcards" element={<FlashcardsPage />} />
           <Route path="/lessons" element={<LessonsPage />} />

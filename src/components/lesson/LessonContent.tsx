@@ -6,6 +6,7 @@ import FillBlankExercise from './FillBlankExercise'
 import MatchingExercise from './MatchingExercise'
 import SpellingExercise from './SpellingExercise'
 import { useProgress } from '../../hooks/useProgress'
+import BookLessonContent from './BookLessonContent'
 
 interface Props {
   lesson: Lesson
@@ -13,6 +14,10 @@ interface Props {
 
 export default function LessonContent({ lesson }: Props) {
   const { updateLessonProgress } = useProgress()
+
+  if (lesson.seriesId === 'book-1' && lesson.bookUnitWords?.length) {
+    return <BookLessonContent lesson={lesson} />
+  }
 
   const handleExerciseComplete = (exerciseId: string, score: number) => {
     updateLessonProgress(lesson.id, {

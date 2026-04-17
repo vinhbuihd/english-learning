@@ -1,4 +1,6 @@
 const STORAGE_KEY = 'english-learning-progress'
+const LEARNING_WORDS_STORAGE_KEY = 'english-learning-learning-words'
+const BOOK_WORD_CACHE_STORAGE_KEY = 'english-learning-book-word-cache'
 
 export function loadFromStorage<T>(key: string, defaultValue: T): T {
   try {
@@ -18,4 +20,4 @@ export function saveToStorage<T>(key: string, value: T): void {
   }
 }
 
-export { STORAGE_KEY }
+export { STORAGE_KEY, LEARNING_WORDS_STORAGE_KEY, BOOK_WORD_CACHE_STORAGE_KEY }

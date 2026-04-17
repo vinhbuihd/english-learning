@@ -8,6 +8,7 @@ import { lesson07 } from './lesson-07-pr-and-issues'
 import { lesson08 } from './lesson-08-meetings-and-questions'
 import { lesson09 } from './lesson-09-code-review'
 import { lesson10 } from './lesson-10-bugs-and-solutions'
+import { book1Lessons } from './book-1-lessons'
 import type { Lesson } from './types'
 
 export const allLessons: Lesson[] = [
@@ -21,6 +22,7 @@ export const allLessons: Lesson[] = [
   lesson08,
   lesson09,
   lesson10,
+  ...book1Lessons,
 ]
 
 export function getLessonBySlug(slug: string): Lesson | undefined {
