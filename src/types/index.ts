@@ -82,6 +82,7 @@ export interface BookWordDetail {
   definition: string
   definitionVi: string
   example: string
+  relatedWords: string[]
   source: string
 }
 

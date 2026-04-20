@@ -297,8 +297,12 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         }
 
         const currentDailyLog = prev.dailyLogs[todayStr()]
+        const newlyCompleted = mergedLesson.completed && !existing.completed
+        const newExerciseCount = update.exerciseScores
+          ? Object.keys(update.exerciseScores).filter((exerciseId) => !(exerciseId in existing.exerciseScores)).length
+          : 0
         const lessonCompletions =
-          mergedLesson.completed && !currentDailyLog?.lessonsCompleted?.includes(lessonId)
+          newlyCompleted && !currentDailyLog?.lessonsCompleted?.includes(lessonId)
             ? [...(currentDailyLog?.lessonsCompleted ?? []), lessonId]
             : currentDailyLog?.lessonsCompleted
 
@@ -310,7 +314,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
               [lessonId]: mergedLesson,
             },
             dailyLogs: mergeDailyLogEntry(prev, {
-              exercisesDone: (currentDailyLog?.exercisesDone ?? 0) + (update.exerciseScores ? 1 : 0),
+              exercisesDone: (currentDailyLog?.exercisesDone ?? 0) + newExerciseCount,
               lessonsCompleted: lessonCompletions,
             }),
           },

@@ -13,15 +13,25 @@ interface Props {
 }
 
 export default function LessonContent({ lesson }: Props) {
-  const { updateLessonProgress } = useProgress()
+  const { progress, updateLessonProgress } = useProgress()
 
   if (lesson.seriesId === 'book-1' && lesson.bookUnitWords?.length) {
     return <BookLessonContent lesson={lesson} />
   }
 
+  const exerciseIds = lesson.sections.flatMap((section) =>
+    section.type === 'exercises' ? section.exercises?.map((exercise) => exercise.id) ?? [] : [],
+  )
+
   const handleExerciseComplete = (exerciseId: string, score: number) => {
+    const exerciseScores = {
+      ...(progress.lessonProgress[lesson.id]?.exerciseScores ?? {}),
+      [exerciseId]: score,
+    }
+
     updateLessonProgress(lesson.id, {
       exerciseScores: { [exerciseId]: score },
+      completed: exerciseIds.length > 0 && exerciseIds.every((id) => id in exerciseScores),
     })
   }
 

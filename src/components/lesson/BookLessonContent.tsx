@@ -1,167 +1,13 @@
 import { useMemo } from 'react'
+import { buildBook1UnitContent } from '../../data/lessons/book-1-content'
 import type { Exercise, Lesson } from '../../data/lessons/types'
 import { useBookUnitWords } from '../../hooks/useBookUnitWords'
 import { useProgress } from '../../hooks/useProgress'
-import { shuffleArray } from '../../lib/utils'
-import type { BookWordDetail } from '../../types'
 import SpeakButton from '../vocabulary/SpeakButton'
 import QuizExercise from './QuizExercise'
 
 interface Props {
   lesson: Lesson
-}
-
-interface ExerciseGroup {
-  id: string
-  title: string
-  description?: string
-  exercises: Exercise[]
-}
-
-function getDistractorWords(details: BookWordDetail[], excludeTerm: string): string[] {
-  return details.filter((detail) => detail.term !== excludeTerm).map((detail) => detail.term)
-}
-
-function getDistractorDefinitions(details: BookWordDetail[], excludeTerm: string): string[] {
-  return details.filter((detail) => detail.term !== excludeTerm).map((detail) => detail.definition)
-}
-
-function createCorrectSentence(detail: BookWordDetail): string {
-  if (detail.example) return detail.example
-  if (detail.partOfSpeech === 'verb') return `They ${detail.term} when the situation matches the definition.`
-  if (detail.partOfSpeech === 'adjective') return `The situation feels ${detail.term} in this example.`
-  if (detail.partOfSpeech === 'adverb') return `The team worked ${detail.term} to finish the task.`
-  return `This sentence uses ${detail.term} in a natural context.`
-}
-
-function createIncorrectSentence(detail: BookWordDetail): string {
-  if (detail.partOfSpeech === 'verb') return `The notebook ${detail.term} blue and square every morning.`
-  if (detail.partOfSpeech === 'adjective') return `We can ${detail.term} the homework with a pencil.`
-  if (detail.partOfSpeech === 'adverb') return `The ${detail.term} sat on the desk beside the lamp.`
-  return `Every ${detail.term} can fly to school and cook the clouds.`
-}
-
-function buildChooseRightWordExercises(lessonId: string, details: BookWordDetail[]): Exercise[] {
-  return details.slice(0, 5).map((detail, index) => {
-    const options = shuffleArray([
-      { text: detail.term, isCorrect: true },
-      ...getDistractorWords(details, detail.term)
-        .slice(0, 3)
-        .map((word) => ({ text: word, isCorrect: false })),
-    ]).map((option, optionIndex) => ({
-      ...option,
-      text: `${String.fromCharCode(97 + optionIndex)}. ${option.text}`,
-    }))
-
-    return {
-      id: `${lessonId}-choose-word-${index + 1}`,
-      type: 'multiple-choice',
-      question: `${index + 1}. ${detail.definition}`,
-      options,
-    }
-  })
-}
-
-function buildChooseRightDefinitionExercises(lessonId: string, details: BookWordDetail[]): Exercise[] {
-  return details.slice(5, 10).map((detail, index) => ({
-    id: `${lessonId}-choose-definition-${index + 1}`,
-    type: 'multiple-choice',
-    question: `${index + 1}. Choose the right definition for the given word: ${detail.term}`,
-    options: shuffleArray([
-      { text: detail.definition, isCorrect: true },
-      ...getDistractorDefinitions(details, detail.term)
-        .slice(0, 3)
-        .map((definition) => ({ text: definition, isCorrect: false })),
-    ]),
-  }))
-}
-
-function buildSentenceSenseExercises(lessonId: string, details: BookWordDetail[]): Exercise[] {
-  return details.slice(10, 20).map((detail, index) => ({
-    id: `${lessonId}-sentence-sense-${index + 1}`,
-    type: 'multiple-choice',
-    question: `${index + 1}. Check the sentence with the bolded word that makes better sense.`,
-    options: shuffleArray([
-      { text: `a. ${createCorrectSentence(detail)}`, isCorrect: true },
-      { text: `b. ${createIncorrectSentence(detail)}`, isCorrect: false },
-    ]),
-  }))
-}
-
-function buildReadingStory(details: BookWordDetail[]): { title: string; paragraphs: string[] } {
-  const pick = (index: number, fallback: string) => details[index]?.term ?? fallback
-
-  return {
-    title: `The ${pick(0, 'Traveler')} and the ${pick(1, 'Guide')}`,
-    paragraphs: [
-      `A young traveler started an unexpected journey. At first, the traveler felt ${pick(0, 'afraid')}, but still decided to ${pick(1, 'continue')} because the goal was important.`,
-      `Along the road, the traveler met a guide who gave a careful plan. Together, they tried to ${pick(2, 'follow')} each step and avoid mistakes when the weather suddenly changed.`,
-      `In the middle of the trip, they found a clue that helped them ${pick(3, 'discover')} the safest path. The traveler used ${pick(4, 'wisdom')} and patience, and the two finally reached the right place.`,
-      `At the end, they were pleased because the difficult journey had become a useful lesson. The guide smiled and said that practice, attention, and courage always lead to progress.`,
-    ],
-  }
-}
-
-function buildReadingExercises(lessonId: string, details: BookWordDetail[], storyTitle: string): Exercise[] {
-  const keyWords = details.slice(0, 6).map((detail) => detail.term).join(', ')
-
-  return [
-    {
-      id: `${lessonId}-reading-1`,
-      type: 'multiple-choice',
-      question: '1. What is this story mainly about?',
-      options: [
-        { text: 'How a traveler and a guide solved a problem during a journey', isCorrect: true },
-        { text: 'How a scientist built a laboratory in the forest', isCorrect: false },
-        { text: 'How a family prepared breakfast before school', isCorrect: false },
-        { text: 'How a teacher graded a difficult exam', isCorrect: false },
-      ],
-    },
-    {
-      id: `${lessonId}-reading-2`,
-      type: 'multiple-choice',
-      question: `2. What happened near the beginning of "${storyTitle}"?`,
-      options: [
-        { text: 'The traveler began the journey even though it felt difficult', isCorrect: true },
-        { text: 'The guide cancelled the trip and went home', isCorrect: false },
-        { text: 'The team forgot all of the target words immediately', isCorrect: false },
-        { text: 'A storm destroyed the entire village before the trip', isCorrect: false },
-      ],
-    },
-    {
-      id: `${lessonId}-reading-3`,
-      type: 'multiple-choice',
-      question: '3. Why did the clue matter in the story?',
-      options: [
-        { text: 'It helped the characters find a safer and better answer', isCorrect: true },
-        { text: 'It made the trip longer and more confusing on purpose', isCorrect: false },
-        { text: 'It showed that the guide wanted to stop helping', isCorrect: false },
-        { text: 'It proved that the main character should turn back immediately', isCorrect: false },
-      ],
-    },
-    {
-      id: `${lessonId}-reading-4`,
-      type: 'multiple-choice',
-      question: '4. Which statement is true at the end of the story?',
-      options: [
-        { text: 'The characters finish the journey and learn from it', isCorrect: true },
-        { text: 'The traveler refuses to continue and quits the task', isCorrect: false },
-        { text: 'The guide loses the clue and forgets the plan', isCorrect: false },
-        { text: 'The problem becomes worse because nobody pays attention', isCorrect: false },
-      ],
-    },
-    {
-      id: `${lessonId}-reading-5`,
-      type: 'multiple-choice',
-      question: '5. Which set of target words appears most directly in this reading?',
-      options: [
-        { text: keyWords, isCorrect: true },
-        { text: 'camera, keyboard, printer, signal, browser, laptop', isCorrect: false },
-        { text: 'doctor, dentist, pilot, chef, actor, singer', isCorrect: false },
-        { text: 'breakfast, lunch, dinner, snack, dessert, soup', isCorrect: false },
-      ],
-    },
-  ]
 }
 
 function ExerciseRenderer({
@@ -175,41 +21,24 @@ function ExerciseRenderer({
 }
 
 export default function BookLessonContent({ lesson }: Props) {
-  const { updateLessonProgress } = useProgress()
+  const { progress, updateLessonProgress } = useProgress()
   const unitWords = lesson.bookUnitWords ?? []
   const { details, loading } = useBookUnitWords(unitWords)
 
-  const story = useMemo(() => buildReadingStory(details), [details])
+  const content = useMemo(() => buildBook1UnitContent(lesson.order, details), [details, lesson.order])
+  const exerciseGroups = content.exerciseGroups
 
-  const exerciseGroups = useMemo<ExerciseGroup[]>(
-    () => [
-      {
-        id: 'choose-right-word',
-        title: 'Choose the right word for the given definition.',
-        exercises: buildChooseRightWordExercises(lesson.id, details),
-      },
-      {
-        id: 'choose-right-definition',
-        title: 'Choose the right definition for the given word.',
-        exercises: buildChooseRightDefinitionExercises(lesson.id, details),
-      },
-      {
-        id: 'sentence-sense',
-        title: 'Check the sentence with the bolded word that makes better sense.',
-        exercises: buildSentenceSenseExercises(lesson.id, details),
-      },
-      {
-        id: 'reading-questions',
-        title: 'Answer the questions.',
-        exercises: buildReadingExercises(lesson.id, details, story.title),
-      },
-    ],
-    [details, lesson.id, story.title],
-  )
+  const exerciseIds = exerciseGroups.flatMap((group) => group.exercises.map((exercise) => exercise.id))
 
   const handleExerciseComplete = (exerciseId: string, score: number) => {
+    const exerciseScores = {
+      ...(progress.lessonProgress[lesson.id]?.exerciseScores ?? {}),
+      [exerciseId]: score,
+    }
+
     updateLessonProgress(lesson.id, {
       exerciseScores: { [exerciseId]: score },
+      completed: exerciseIds.length > 0 && exerciseIds.every((id) => id in exerciseScores),
     })
   }
 
@@ -218,8 +47,7 @@ export default function BookLessonContent({ lesson }: Props) {
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm sm:p-7">
         <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">Unit Overview</h2>
         <p className="mt-3 text-base leading-8 text-gray-600 sm:text-lg">
-          This lesson now follows the same exercise flow as the book: target words, definition
-          checks, sentence sense checks, story reading, and answer questions.
+          {content.overview}
         </p>
         <div className="mt-5 rounded-lg bg-primary-50 p-4 text-base leading-7 text-primary-800 sm:text-lg">
           {loading
@@ -275,9 +103,9 @@ export default function BookLessonContent({ lesson }: Props) {
       ))}
 
       <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm sm:p-7">
-        <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">{story.title}</h2>
+        <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">{content.reading.title}</h2>
         <div className="mt-5 space-y-4 text-base leading-8 text-gray-700 sm:text-lg">
-          {story.paragraphs.map((paragraph, index) => (
+          {content.reading.paragraphs.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
         </div>

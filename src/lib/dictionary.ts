@@ -249,7 +249,10 @@ export async function lookupWordBasics(term: string): Promise<BookWordDetail> {
   }
 
   const primaryMeaning = extractPrimaryMeaning(entries)
-  const definitionVi = await translateText(primaryMeaning.definition)
+  const [definitionVi, relatedWords] = await Promise.all([
+    translateText(primaryMeaning.definition),
+    fetchDatamuseWords({ ml: normalizedTerm }, 6),
+  ])
 
   return {
     term: entries[0]?.word ?? normalizedTerm,
@@ -259,7 +262,8 @@ export async function lookupWordBasics(term: string): Promise<BookWordDetail> {
     definition: primaryMeaning.definition,
     definitionVi,
     example: primaryMeaning.example,
-    source: 'dictionaryapi.dev',
+    relatedWords: relatedWords.filter((word) => word !== normalizedTerm),
+    source: 'dictionaryapi.dev + datamuse',
   }
 }
 

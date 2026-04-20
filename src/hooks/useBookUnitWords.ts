@@ -4,16 +4,28 @@ import { lookupWordBasics } from '../lib/dictionary'
 import type { BookWordDetail } from '../types'
 import { useLocalStorage } from './useLocalStorage'
 
+const WORD_LOOKUP_TIMEOUT_MS = 8000
+
 function createFallbackWord(term: string): BookWordDetail {
   return {
     term,
     ipa: '',
     partOfSpeech: 'word',
     definition: 'Review this word with the dictionary tab if the live lookup is unavailable.',
-    definitionVi: 'Hãy tra lại từ này trong tab từ điển nếu dữ liệu trực tuyến chưa tải được.',
+    definitionVi: 'Hay tra lai tu nay trong tab tu dien neu du lieu truc tuyen chua tai duoc.',
     example: `Try writing your own sentence with "${term}".`,
+    relatedWords: [],
     source: 'fallback',
   }
+}
+
+async function lookupWordWithTimeout(word: string): Promise<BookWordDetail> {
+  return Promise.race([
+    lookupWordBasics(word),
+    new Promise<BookWordDetail>((_, reject) => {
+      window.setTimeout(() => reject(new Error(`Lookup timed out for "${word}"`)), WORD_LOOKUP_TIMEOUT_MS)
+    }),
+  ])
 }
 
 export function useBookUnitWords(words: string[]) {
@@ -30,35 +42,42 @@ export function useBookUnitWords(words: string[]) {
       const wordsNeedingRefresh = words.filter((word) => {
         const cachedWord = cache[word.toLowerCase()]
         if (!cachedWord) return true
-        return !cachedWord.definitionVi?.trim()
+        return !cachedWord.definition?.trim() || !Array.isArray(cachedWord.relatedWords)
       })
 
-      if (wordsNeedingRefresh.length === 0) return
+      if (wordsNeedingRefresh.length === 0) {
+        setLoading(false)
+        return
+      }
 
       setLoading(true)
 
-      const loadedWords = await Promise.all(
-        wordsNeedingRefresh.map(async (word) => {
-          try {
-            const detail = await lookupWordBasics(word)
-            return [word.toLowerCase(), detail] as const
-          } catch {
-            return [word.toLowerCase(), createFallbackWord(word)] as const
-          }
-        }),
-      )
+      try {
+        const loadedWords = await Promise.all(
+          wordsNeedingRefresh.map(async (word) => {
+            try {
+              const detail = await lookupWordWithTimeout(word)
+              return [word.toLowerCase(), detail] as const
+            } catch {
+              return [word.toLowerCase(), createFallbackWord(word)] as const
+            }
+          }),
+        )
 
-      if (cancelled) return
+        if (cancelled) return
 
-      setCache((prev) => {
-        const next = { ...prev }
-        loadedWords.forEach(([key, value]) => {
-          next[key] = value
+        setCache((prev) => {
+          const next = { ...prev }
+          loadedWords.forEach(([key, value]) => {
+            next[key] = value
+          })
+          return next
         })
-        return next
-      })
-
-      setLoading(false)
+      } finally {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      }
     }
 
     void loadMissingWords()
